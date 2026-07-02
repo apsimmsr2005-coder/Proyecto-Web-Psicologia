@@ -28,10 +28,11 @@ class ReporteService:
     def beneficiarios_por_estado(self):
         with SessionLocal() as db:
             rows = (
-                db.query(BeneficiarioORM.estado, func.count(BeneficiarioORM.id))
+                db.query(BeneficiarioORM.estado, func.count(BeneficiarioORM.id)) # selecciona columna + un conteo, no filas completas
                 .group_by(BeneficiarioORM.estado)
                 .all()
             )
+            # rows es una lista de tuplas: [("activo", 12), ("cerrado", 5), ...]
             return [{"estado": estado, "total": total} for estado, total in rows]
 
     def sesiones_por_estado(self):
@@ -50,8 +51,9 @@ class ReporteService:
                     UsuarioORM.id,
                     UsuarioORM.nombre,
                     UsuarioORM.apellido,
-                    func.count(SesionORM.id),
+                    func.count(SesionORM.id), # cuenta sesiones por cada terapeuta (par con el group_by de abajo)
                 )
+                # outerjoin (LEFT JOIN): trae TODOS los usuarios aunque tengan 0 sesiones.
                 .outerjoin(SesionORM, UsuarioORM.id == SesionORM.terapeuta_id)
                 .filter(UsuarioORM.rol.in_(["terapeuta", "admin"]))
                 .group_by(UsuarioORM.id, UsuarioORM.nombre, UsuarioORM.apellido)

@@ -25,7 +25,7 @@ class UsuarioService:
             nombre=data.nombre,
             apellido=data.apellido,
             correo=data.correo,
-            contrasena_hash=hash_password(data.contrasena),
+            contrasena_hash=hash_password(data.contrasena), # nunca se guarda data.contrasena directo, siempre pasa por el hash
             rol=data.rol.lower(),
             activo=data.activo,
         )
@@ -42,7 +42,7 @@ class UsuarioService:
         if not usuario:
             return None
 
-        values = data.model_dump(exclude_unset=True)
+        values = data.model_dump(exclude_unset=True) # solo campos que el cliente sí envió
         if "rol" in values and values["rol"].lower() not in ROLES_VALIDOS:
             raise ValueError("Rol invalido")
         if "correo" in values:
@@ -52,11 +52,11 @@ class UsuarioService:
 
         for field, value in values.items():
             if field == "contrasena":
-                usuario.contrasena_hash = hash_password(value)
+                usuario.contrasena_hash = hash_password(value) # caso especial: el campo del schema no coincide con el de la entidad
             elif field == "rol":
                 usuario.rol = value.lower()
             else:
-                setattr(usuario, field, value)
+                setattr(usuario, field, value) # resto de campos: asignación genérica
         return self.repo.update(usuario)
 
     def delete_usuario(self, usuario_id):

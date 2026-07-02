@@ -7,6 +7,8 @@ from app.service.reporte_service import ReporteService
 router = APIRouter(
     prefix="/reportes",
     tags=["Reportes"],
+    # se aplica a TODAS las rutas de este router: cada request debe pasar por get_current_user
+    # antes de ejecutar el endpoint (protege todo /reportes/* sin repetir Depends en cada función)
     dependencies=[Depends(get_current_user)],
 )
 service = ReporteService()

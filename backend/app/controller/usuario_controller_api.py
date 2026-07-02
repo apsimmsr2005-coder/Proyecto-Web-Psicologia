@@ -10,6 +10,8 @@ service = UsuarioService()
 
 
 @router.post("/", response_model=UsuarioSchema, dependencies=[Depends(require_admin)])
+# dependencies por endpoint (no en el router, a diferencia de ReporteService): cada ruta
+# elige su propio nivel de acceso, algunas solo piden estar logueado, otras piden ser admin
 def create_usuario(usuario: UsuarioCreate):
     try:
         return service.create_usuario(usuario)
@@ -19,6 +21,7 @@ def create_usuario(usuario: UsuarioCreate):
 
 @router.get("/", response_model=list[UsuarioSchema], dependencies=[Depends(get_current_user)])
 def list_usuarios():
+    # menos restrictivo que los demás: solo pide estar logueado, no ser admin
     return service.list_usuarios()
 
 

@@ -16,6 +16,7 @@ service = BeneficiarioService()
 
 @router.post("/", response_model=BeneficiarioSchema)
 def create_beneficiario(beneficiario: BeneficiarioCreate):
+    # FastAPI valida el body contra BeneficiarioCreate automáticamente antes de llegar acá
     return service.create_beneficiario(beneficiario)
 
 
@@ -28,7 +29,7 @@ def list_beneficiarios(
 
 
 @router.get("/{beneficiario_id}", response_model=BeneficiarioSchema)
-def get_beneficiario(beneficiario_id: int):
+def get_beneficiario(beneficiario_id: int): # FastAPI castea el path param a int automáticamente
     beneficiario = service.get_beneficiario(beneficiario_id)
     if not beneficiario:
         raise HTTPException(status_code=404, detail="Beneficiario no encontrado")

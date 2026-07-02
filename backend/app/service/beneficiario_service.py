@@ -21,10 +21,11 @@ class BeneficiarioService:
     def create_beneficiario(self, data):
         self._validar_estado_y_riesgo(data.estado, data.nivel_riesgo)
         if self.repo.get_by_identificador(data.identificador):
-            raise ValueError("Ya existe un beneficiario con ese identificador")
+            raise ValueError("Ya existe un beneficiario con ese identificador") # valida unicidad ANTES de tocar la BD
         if self.repo.get_by_cedula(data.cedula):
             raise ValueError("Ya existe un beneficiario con esa cedula")
 
+        # convierte el schema Pydantic (data) en un objeto ORM
         beneficiario = BeneficiarioORM(
             identificador=data.identificador,
             nombre=data.nombre,
@@ -33,7 +34,7 @@ class BeneficiarioService:
             fecha_nacimiento=data.fecha_nacimiento,
             direccion=data.direccion,
             telefono=data.telefono,
-            estado=data.estado.lower(),
+            estado=data.estado.lower(), # normaliza antes de guardar (consistencia en la BD)
             motivo_consulta=data.motivo_consulta,
             nivel_riesgo=data.nivel_riesgo.lower(),
         )
@@ -50,8 +51,8 @@ class BeneficiarioService:
         if not beneficiario:
             return None
 
-        values = data.model_dump(exclude_unset=True)
-        estado = values.get("estado", beneficiario.estado)
+        values = data.model_dump(exclude_unset=True) # solo los campos que el cliente Sí envió (update parcial real)
+        estado = values.get("estado", beneficiario.estado) # si no vino "estado", usa el actual para validar igual
         riesgo = values.get("nivel_riesgo", beneficiario.nivel_riesgo)
         self._validar_estado_y_riesgo(estado, riesgo)
 
@@ -63,7 +64,7 @@ class BeneficiarioService:
         for field, value in values.items():
             if field in {"estado", "nivel_riesgo"}:
                 value = value.lower()
-            setattr(beneficiario, field, value)
+            setattr(beneficiario, field, value) # aplica cada campo dinámicamente al objeto ORM
         return self.repo.update(beneficiario)
 
     def delete_beneficiario(self, beneficiario_id):
