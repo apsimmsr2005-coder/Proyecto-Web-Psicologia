@@ -24,4 +24,3 @@ class SeguimientoORM(Base):
 
     def __repr__(self):
         return f"Seguimiento({self.identificador}, prioridad={self.prioridad})"
-

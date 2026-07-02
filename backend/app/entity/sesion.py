@@ -25,4 +25,3 @@ class SesionORM(Base):
 
     def __repr__(self):
         return f"Sesion({self.identificador}, fecha={self.fecha}, estado={self.estado})"
-
