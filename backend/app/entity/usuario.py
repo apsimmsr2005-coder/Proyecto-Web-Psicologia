@@ -1,37 +1,24 @@
-from sqlalchemy import Column, Date, DateTime, Integer, String, func
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.config.database import Base
 
 
-class BeneficiarioORM(Base):
-    """Entidad ORM para personas beneficiarias del programa comunitario."""
+class UsuarioORM(Base):
+    """Entidad ORM para administradores y terapeutas."""
 
-    __tablename__ = "beneficiarios_tb"
+    __tablename__ = "usuarios_tb"
 
     id = Column(Integer, primary_key=True, index=True)
     identificador = Column(String(20), unique=True, nullable=False, index=True)
     nombre = Column(String(80), nullable=False)
     apellido = Column(String(80), nullable=False)
-    cedula = Column(String(30), unique=True, nullable=False, index=True)
-    fecha_nacimiento = Column(Date, nullable=False)
-    direccion = Column(String(200), nullable=False)
-    telefono = Column(String(30), nullable=False)
-    estado = Column(String(30), nullable=False, default="activo")
-    motivo_consulta = Column(String(300), nullable=False)
-    nivel_riesgo = Column(String(20), nullable=False, default="bajo")
-    creado_en = Column(DateTime, server_default=func.now())
+    correo = Column(String(120), unique=True, nullable=False, index=True)
+    contrasena_hash = Column(String(64), nullable=False)
+    rol = Column(String(20), nullable=False, default="terapeuta")
+    activo = Column(Boolean, default=True)
 
-    sesiones = relationship(
-        "SesionORM",
-        back_populates="beneficiario",
-        cascade="all, delete-orphan",
-    )
-    seguimientos = relationship(
-        "SeguimientoORM",
-        back_populates="beneficiario",
-        cascade="all, delete-orphan",
-    )
+    sesiones = relationship("SesionORM", back_populates="terapeuta")
 
     def __repr__(self):
-        return f"Beneficiario({self.identificador}, {self.nombre} {self.apellido})"
+        return f"Usuario({self.identificador}, {self.correo}, rol={self.rol})"
