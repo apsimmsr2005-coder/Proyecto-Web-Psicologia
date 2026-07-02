@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SaludMente Comunitaria</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="loginView" class="login-layout">
+        <div class="brand-panel">
+          <div class="brand-lockup">
+            <span class="brand-mark">SM</span>
+            <div>
+              <p class="eyebrow">Sistema comunitario</p>
+              <h1>SaludMente Comunitaria</h1>
+            </div>
+          </div>
+          <p class="lead">Atencion psicologica organizada para equipos que trabajan con personas, casos y seguimiento continuo.</p>
+          <div class="preview-panel" aria-hidden="true">
+            <div class="preview-top">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="preview-grid">
+              <div>
+                <small>Casos activos</small>
+                <strong>24</strong>
+              </div>
+              <div>
+                <small>Riesgo alto</small>
+                <strong>5</strong>
+              </div>
+            </div>
+            <div class="preview-bars">
+              <span style="width: 78%"></span>
+              <span style="width: 54%"></span>
+              <span style="width: 66%"></span>
+            </div>
+          </div>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <div>
+            <p class="eyebrow">Acceso seguro</p>
+            <h2>Ingreso</h2>
+          </div>
+          <label>
+            Correo
+            <input id="loginCorreo" type="email" value="admin@sistema.com" autocomplete="username" required>
+          </label>
+          <label>
+            Contrasena
+            <input id="loginContrasena" type="password" value="admin123" autocomplete="current-password" required>
+          </label>
+          <button type="submit" class="primary-button">Entrar</button>
+          <p id="loginMessage" class="message"></p>
+        </form>
+      </section>
+
+      <section id="mainView" class="workspace hidden">
+        <header class="topbar">
+          <div class="brand-lockup compact">
+            <span class="brand-mark">SM</span>
+            <div>
+              <p class="eyebrow">Atencion psicologica comunitaria</p>
+              <h1>SaludMente Comunitaria</h1>
+            </div>
+          </div>
+          <div class="session-box">
+            <span id="currentUser"></span>
+            <button id="logoutButton" type="button" class="ghost-button">Salir</button>
+          </div>
+        </header>
+
+        <nav class="tabs" aria-label="Modulos">
+          <button class="tab active" data-view="dashboard"><span>R</span>Reportes</button>
+          <button class="tab" data-view="beneficiarios"><span>B</span>Beneficiarios</button>
+          <button class="tab" data-view="sesiones"><span>S</span>Sesiones</button>
+          <button class="tab" data-view="seguimientos"><span>G</span>Seguimientos</button>
+          <button class="tab" data-view="usuarios"><span>U</span>Usuarios</button>
+        </nav>
+
+        <p id="appMessage" class="message"></p>
+
+        <section id="dashboard" class="view active">
+          <div id="summaryGrid" class="summary-grid"></div>
+          <div class="two-columns">
+            <section>
+              <h2>Beneficiarios por estado</h2>
+              <div id="beneficiariosEstado"></div>
+            </section>
+            <section>
+              <h2>Sesiones por estado</h2>
+              <div id="sesionesEstado"></div>
+            </section>
+          </div>
+          <section>
+            <h2>Carga de terapeutas</h2>
+            <div id="cargaTerapeutas"></div>
+          </section>
+        </section>
+
+        <section id="beneficiarios" class="view">
+          <div class="module-header">
+            <h2>Beneficiarios</h2>
+            <input id="beneficiarioSearch" type="search" placeholder="Buscar por nombre, cedula o ID">
+          </div>
+          <form id="beneficiarioForm" class="data-form">
+            <input type="hidden" name="id">
+            <label>ID <input name="identificador" required placeholder="BEN-002"></label>
+            <label>Nombre <input name="nombre" required></label>
+            <label>Apellido <input name="apellido" required></label>
+            <label>Cedula <input name="cedula" required></label>
+            <label>Fecha nacimiento <input name="fecha_nacimiento" type="date" required></label>
+            <label>Telefono <input name="telefono" required></label>
+            <label>Direccion <input name="direccion" required></label>
+            <label>Estado
+              <select name="estado">
+                <option value="activo">activo</option>
+                <option value="en_seguimiento">en_seguimiento</option>
+                <option value="cerrado">cerrado</option>
+              </select>
+            </label>
+            <label>Riesgo
+              <select name="nivel_riesgo">
+                <option value="bajo">bajo</option>
+                <option value="medio">medio</option>
+                <option value="alto">alto</option>
+              </select>
+            </label>
+            <label class="wide">Motivo consulta <textarea name="motivo_consulta" required></textarea></label>
+            <div class="form-actions">
+              <button type="submit" class="primary-button">Guardar</button>
+              <button type="button" class="ghost-button" data-reset="beneficiarioForm">Limpiar</button>
+            </div>
+          </form>
+          <div id="beneficiariosTable"></div>
+        </section>
+
+        <section id="sesiones" class="view">
+          <div class="module-header">
+            <h2>Sesiones</h2>
+          </div>
+          <form id="sesionForm" class="data-form">
+            <input type="hidden" name="id">
+            <label>ID <input name="identificador" required placeholder="SES-002"></label>
+            <label>Beneficiario <select name="beneficiario_id" required></select></label>
+            <label>Terapeuta <select name="terapeuta_id" required></select></label>
+            <label>Fecha <input name="fecha" type="date" required></label>
+            <label>Hora <input name="hora" type="time" required></label>
+            <label>Modalidad
+              <select name="modalidad">
+                <option value="presencial">presencial</option>
+                <option value="virtual">virtual</option>
+                <option value="telefonica">telefonica</option>
+              </select>
+            </label>
+            <label>Estado
+              <select name="estado">
+                <option value="programada">programada</option>
+                <option value="realizada">realizada</option>
+                <option value="cancelada">cancelada</option>
+              </select>
+            </label>
+            <label class="wide">Notas <textarea name="notas"></textarea></label>
+            <div class="form-actions">
+              <button type="submit" class="primary-button">Guardar</button>
+              <button type="button" class="ghost-button" data-reset="sesionForm">Limpiar</button>
+            </div>
+          </form>
+          <div id="sesionesTable"></div>
+        </section>
+
+        <section id="seguimientos" class="view">
+          <div class="module-header">
+            <h2>Seguimientos</h2>
+          </div>
+          <form id="seguimientoForm" class="data-form">
+            <input type="hidden" name="id">
+            <label>ID <input name="identificador" required placeholder="SEG-002"></label>
+            <label>Beneficiario <select name="beneficiario_id" required></select></label>
+            <label>Sesion <select name="sesion_id"></select></label>
+            <label>Fecha <input name="fecha" type="date" required></label>
+            <label>Prioridad
+              <select name="prioridad">
+                <option value="baja">baja</option>
+                <option value="media">media</option>
+                <option value="alta">alta</option>
+              </select>
+            </label>
+            <label>Completado
+              <select name="completado">
+                <option value="false">no</option>
+                <option value="true">si</option>
+              </select>
+            </label>
+            <label class="wide">Accion <input name="accion" required></label>
+            <label class="wide">Descripcion <textarea name="descripcion" required></textarea></label>
+            <div class="form-actions">
+              <button type="submit" class="primary-button">Guardar</button>
+              <button type="button" class="ghost-button" data-reset="seguimientoForm">Limpiar</button>
+            </div>
+          </form>
+          <div id="seguimientosTable"></div>
+        </section>
+
+        <section id="usuarios" class="view">
+          <div class="module-header">
+            <h2>Usuarios</h2>
+          </div>
+          <form id="usuarioForm" class="data-form">
+            <input type="hidden" name="id">
+            <label>ID <input name="identificador" required placeholder="USR-003"></label>
+            <label>Nombre <input name="nombre" required></label>
+            <label>Apellido <input name="apellido" required></label>
+            <label>Correo <input name="correo" type="email" required></label>
+            <label>Contrasena <input name="contrasena" type="password"></label>
+            <label>Rol
+              <select name="rol">
+                <option value="terapeuta">terapeuta</option>
+                <option value="admin">admin</option>
+              </select>
+            </label>
+            <label>Activo
+              <select name="activo">
+                <option value="true">si</option>
+                <option value="false">no</option>
+              </select>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="primary-button">Guardar</button>
+              <button type="button" class="ghost-button" data-reset="usuarioForm">Limpiar</button>
+            </div>
+          </form>
+          <div id="usuariosTable"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
