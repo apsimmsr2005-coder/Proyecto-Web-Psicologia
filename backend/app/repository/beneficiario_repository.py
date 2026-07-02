@@ -9,9 +9,9 @@ class BeneficiarioRepository:
 
     def create(self, beneficiario):
         with SessionLocal() as db:
-            db.add(beneficiario)
-            db.commit()
-            db.refresh(beneficiario)
+            db.add(beneficiario) # marca el objeto para insertar
+            db.commit() # ejecuta el INSERT
+            db.refresh(beneficiario) # trae de vuelta valores generados por la BD (id, creado_en)
             return beneficiario
 
     def get(self, beneficiario_id):
@@ -30,7 +30,9 @@ class BeneficiarioRepository:
         with SessionLocal() as db:
             query = db.query(BeneficiarioORM)
             if search:
-                pattern = f"%{search}%"
+                pattern = f"%{search}%" # comodines para LIKE (coincide en cualquier posición)
+                # basta con que UNO de estos campos coincida con el patrón
+                # ilike = LIKE case-insensitive
                 query = query.filter(
                     or_(
                         BeneficiarioORM.nombre.ilike(pattern),
@@ -40,11 +42,13 @@ class BeneficiarioRepository:
                     )
                 )
             if estado:
-                query = query.filter(BeneficiarioORM.estado == estado.lower())
+                query = query.filter(BeneficiarioORM.estado == estado.lower()) # normaliza a minúsculas antes de comparar
             return query.order_by(BeneficiarioORM.id).all()
 
     def update(self, beneficiario):
         with SessionLocal() as db:
+            # merge: el objeto "beneficiario" viene de OTRA sesión (ya cerrada),
+            # así que hay que re-adjuntarlo a esta sesión antes de poder guardarlo
             merged = db.merge(beneficiario)
             db.commit()
             db.refresh(merged)
@@ -52,7 +56,7 @@ class BeneficiarioRepository:
 
     def delete(self, beneficiario):
         with SessionLocal() as db:
-            merged = db.merge(beneficiario)
+            merged = db.merge(beneficiario) 
             db.delete(merged)
             db.commit()
-            return beneficiario
+            return beneficiario # devuelve el objeto original (ya desconectado)

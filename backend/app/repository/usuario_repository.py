@@ -6,6 +6,7 @@ class UsuarioRepository:
     """Repositorio encargado del acceso a datos de usuarios."""
 
     def __init__(self):
+        # UNA sola sesión, creada al instanciar y reutilizada en todos los métodos
         self.db = SessionLocal()
 
     def create(self, usuario):
@@ -27,6 +28,8 @@ class UsuarioRepository:
         return self.db.query(UsuarioORM).order_by(UsuarioORM.id).all()
 
     def update(self, usuario):
+        # No hace falta merge() aquí (a diferencia de Beneficiario): el objeto
+        # "usuario" ya pertenece a self.db porque se obtuvo con self.db.query(...) antes
         self.db.commit()
         self.db.refresh(usuario)
         return usuario
